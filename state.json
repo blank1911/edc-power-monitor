@@ -1,1 +1,74 @@
-{}
+{
+  "last_heartbeat_date": null,
+  "last_keepalive": null,
+  "reddit": {
+    "seeded_feeds": [
+      "https://www.reddit.com/r/electricdaisycarnival/new/.rss"
+    ],
+    "seen_ids": [
+      "t3_1wv6wpg",
+      "t3_1wuszrl",
+      "t3_1wupdpj",
+      "t3_1wuelmn",
+      "t3_1wudz2u",
+      "t3_1wub0ma",
+      "t3_1wua21p",
+      "t3_1wtukc1",
+      "t3_1wtugjt",
+      "t3_1ws0hqk",
+      "t3_1wrswz0",
+      "t3_1wr3hhy",
+      "t3_1wozop7",
+      "t3_1wokqf7",
+      "t3_1woiopu",
+      "t3_1wo687z",
+      "t3_1wlidsf",
+      "t3_1wkvpl9",
+      "t3_1wkua9x",
+      "t3_1wkstpe",
+      "t3_1wkbww2",
+      "t3_1wk84vs",
+      "t3_1wk1c01",
+      "t3_1wis632",
+      "t3_1wiibjj"
+    ]
+  },
+  "targets": {
+    "edc_page": {
+      "consecutive_failures": 1,
+      "detail": "bot challenge page returned, skipping",
+      "failure_alert_sent": false,
+      "last_available_alert": null,
+      "last_result": "BLOCKED",
+      "open_incident": null,
+      "status": null
+    },
+    "frontgate": {
+      "consecutive_failures": 0,
+      "detail": "power ticket listed: ($1499.98 + $92.92 fees) - maximum legal capacity of your rv permitted (up to 8 people) - dedicated rv site with power hookup (both 30 and 50 amp accommodated) ",
+      "failure_alert_sent": false,
+      "last_available_alert": null,
+      "last_result": "AVAILABLE",
+      "open_incident": null,
+      "status": "AVAILABLE"
+    },
+    "reddit_new": {
+      "consecutive_failures": 0,
+      "detail": "25 posts read",
+      "failure_alert_sent": false,
+      "last_available_alert": null,
+      "last_result": "OK",
+      "open_incident": null,
+      "status": "OK"
+    },
+    "reddit_search": {
+      "consecutive_failures": 1,
+      "detail": "blocked: HTTP 429",
+      "failure_alert_sent": false,
+      "last_available_alert": null,
+      "last_result": "BLOCKED",
+      "open_incident": null,
+      "status": null
+    }
+  }
+}
