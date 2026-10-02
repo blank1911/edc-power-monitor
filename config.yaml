@@ -31,7 +31,9 @@ targets:
     url: https://www.reddit.com/r/electricdaisycarnival/new/.rss
 
   reddit_search:
-    enabled: true
+    # Off: Reddit answers this second request from GitHub's shared IPs with HTTP 429.
+    # reddit_new already sees every new post in the sub and applies the same keywords.
+    enabled: false
     url: https://www.reddit.com/r/electricdaisycarnival/search.rss?q=power&restrict_sr=on&sort=new
 
 reddit_keywords:
