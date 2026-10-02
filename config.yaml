@@ -22,8 +22,7 @@ targets:
     buy_link_domain: frontgatetickets.com
 
   frontgate:
-    # Disabled 2026-10-02: first live run misread a ticket description as available. Re-enable after fixing against real HTML.
-    enabled: false
+    enabled: true
     url: https://edclasvegas.frontgatetickets.com/event/evli2snf7u1ewciq
     ticket_keyword: power
 

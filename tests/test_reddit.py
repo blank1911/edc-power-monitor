@@ -32,3 +32,10 @@ def test_feed_parse_flags_matches():
         "t3_aaa111": False,
         "t3_bbb222": True,
     }
+
+
+def test_real_feed_snapshot_parses():
+    r = reddit.parse("reddit_new", (FIXTURES / "reddit_real_new.xml").read_bytes(), KW)
+    assert r.status == "OK"
+    assert len(r.items) == 25
+    assert all(p["id"].startswith("t3_") and p["url"].startswith("https://www.reddit.com/") for p in r.items)

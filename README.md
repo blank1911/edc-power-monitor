@@ -97,6 +97,12 @@ activity.
 5. Android **Settings > Apps > ntfy > App battery usage**: choose **Unrestricted**.
 6. Run `python monitor.py --test-alert` and check that all five arrive, with priority 5 the loudest.
 
+## Refreshing test fixtures
+
+**Actions > snapshot > Run workflow** fetches each target once and saves the raw HTML and feeds
+to the `snapshots` branch. The EDC and Front Gate fixtures in `tests/fixtures/` were built from
+those real pages on 2026-10-02.
+
 ## Configuration
 
 Everything is in `config.yaml`: URLs, per-target `enabled`, Reddit keywords, re-alert interval,

@@ -43,15 +43,6 @@
       "open_incident": null,
       "status": null
     },
-    "frontgate": {
-      "consecutive_failures": 0,
-      "detail": "power ticket listed: ($1499.98 + $92.92 fees) - maximum legal capacity of your rv permitted (up to 8 people) - dedicated rv site with power hookup (both 30 and 50 amp accommodated) ",
-      "failure_alert_sent": false,
-      "last_available_alert": null,
-      "last_result": "AVAILABLE",
-      "open_incident": null,
-      "status": "AVAILABLE"
-    },
     "reddit_new": {
       "consecutive_failures": 0,
       "detail": "25 posts read",

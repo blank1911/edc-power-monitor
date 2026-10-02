@@ -32,7 +32,7 @@ def test_dusk_change_does_not_affect_dawn():
 
 
 def test_dusk_on_sale_while_dawn_sold_out_does_not_alert():
-    # The live page today: Dusk power has Buy Passes, Dawn power is SOLD OUT.
+    # Real snapshot from 2026-10-02: Dusk power has Buy Passes, Dawn power is SOLD OUT.
     html = (FIXTURES / "edc_current_sold_out.html").read_text(encoding="utf-8")
     assert "s2ruckl9ineqq7qq" in html
     assert edc_page.parse(html, *ARGS).status == SOLD_OUT
@@ -40,15 +40,15 @@ def test_dusk_on_sale_while_dawn_sold_out_does_not_alert():
 
 def test_power_row_missing_is_structure_broken():
     html = (FIXTURES / "edc_current_sold_out.html").read_text(encoding="utf-8")
-    dawn_start = html.index("Bring Your Own RV (Dawn 4 Nights)")
+    dawn_start = html.index("<h2 style=\"\">Bring Your Own RV (Dawn 4 Nights)")
     html = html[:dawn_start] + html[dawn_start:].replace("Full Price with Power Add-On", "Full Price Plus", 1)
     assert edc_page.parse(html, *ARGS).status == STRUCTURE_BROKEN
 
 
 def test_sold_out_text_removed_counts_as_available():
     html = (FIXTURES / "edc_current_sold_out.html").read_text(encoding="utf-8")
-    dawn_start = html.index("Bring Your Own RV (Dawn 4 Nights)")
-    html = html[:dawn_start] + html[dawn_start:].replace("SOLD OUT", "Coming soon", 1)
+    dawn_start = html.index("<h2 style=\"\">Bring Your Own RV (Dawn 4 Nights)")
+    html = html[:dawn_start] + html[dawn_start:].replace("<strong>SOLD OUT</strong>", "<strong>Coming soon</strong>", 1)
     assert edc_page.parse(html, *ARGS).status == AVAILABLE
 
 
@@ -69,7 +69,7 @@ def test_table_layout_and_messy_whitespace(sold):
 
 
 def test_eleven_night_power_row_is_not_dawn():
-    # Remove the Dawn power row; the 11 night section's power row must not be picked up instead.
+    # With the Dawn heading gone, the Dusk or 11 night power rows must not be picked up instead.
     html = (FIXTURES / "edc_dawn_section_missing.html").read_text(encoding="utf-8")
     assert "Dusk Till Dawn 11 Nights" in html
     assert edc_page.parse(html, *ARGS).status == STRUCTURE_BROKEN

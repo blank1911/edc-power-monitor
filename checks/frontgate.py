@@ -1,14 +1,13 @@
-"""Secondary check: the Front Gate event page for Dawn RV.
+"""Secondary check: the Front Gate event page for Camp EDC Dawn.
 
-Ticket inventory may show here before the WordPress page updates. We only read what a plain
-GET returns. If the page is rendered by JavaScript or sits behind a bot wall we report that
-and skip; we never try to get around it.
+Ticket inventory may show here before the WordPress page updates. The page is server
+rendered: each ticket type is an element carrying data-price / data-name attributes, and a
+sold out ticket shows "SOLD OUT" where the quantity picker would be. We only read what a
+plain GET returns and never try to get around bot protection.
 """
 from __future__ import annotations
 
-import re
-
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import BeautifulSoup
 
 from .common import (
     AVAILABLE,
@@ -23,30 +22,22 @@ from .common import (
 
 TARGET = "frontgate"
 UNAVAILABLE_WORDS = ("sold out", "soldout", "unavailable", "not available", "no longer available")
-PRICE_RE = re.compile(r"\$\s?\d")
-MAX_ROW_CHARS = 400
 
 
 def _ticket_rows(soup: BeautifulSoup):
-    """Yield (row_text) for every small element that has a price, one row per ticket type."""
+    """Return [(name, row_text)] for each ticket type on the page."""
     rows = []
-    for node in soup.find_all(string=PRICE_RE):
-        if not isinstance(node, NavigableString) or node.parent.name in ("script", "style"):
+    for tag in soup.find_all(attrs={"data-price": True}):
+        if tag.name in ("input", "select", "option", "button"):
             continue
-        row = node.parent
-        # Grow until the row has a name next to the price, but stay small enough to be one row.
-        while row.parent is not None and len(normalize(row.get_text(" "))) < 25:
-            row = row.parent
-        while (
-            row.parent is not None
-            and row.parent.name not in ("body", "html", "[document]")
-            and len(PRICE_RE.findall(row.parent.get_text(" "))) == 1
-            and len(normalize(row.parent.get_text(" "))) <= MAX_ROW_CHARS
-        ):
-            row = row.parent
-        text = normalize(row.get_text(" "))
-        if text not in rows:
-            rows.append(text)
+        # Skip wrappers that contain other ticket rows; keep the innermost one per ticket.
+        if tag.find(lambda t: t is not tag and t.has_attr("data-price") and t.name not in ("input", "select", "option", "button")):
+            continue
+        name = tag.get("data-name") or ""
+        if not name:
+            title = tag.find(class_=lambda c: c and "title" in c)
+            name = title.get_text(" ") if title else ""
+        rows.append((normalize(name), normalize(tag.get_text(" "))))
     return rows
 
 
@@ -57,16 +48,17 @@ def parse(html: str, keyword: str) -> CheckResult:
         return CheckResult(
             TARGET,
             UNREADABLE,
-            "no ticket prices in the HTML (likely JavaScript-rendered); set frontgate.enabled: false",
+            "no ticket rows in the HTML (layout changed or JavaScript-rendered); set frontgate.enabled: false",
         )
     kw = keyword.lower()
-    power_rows = [r for r in rows if kw in r]
+    # Match the ticket name only, so a feature line like "power hookup" in another ticket's description cannot count.
+    power_rows = [(n, t) for n, t in rows if kw in n]
     if not power_rows:
-        return CheckResult(TARGET, SOLD_OUT, f"{len(rows)} ticket rows, none mention '{keyword}'")
-    open_rows = [r for r in power_rows if not any(w in r for w in UNAVAILABLE_WORDS)]
+        return CheckResult(TARGET, SOLD_OUT, f"{len(rows)} ticket types listed, none named '{keyword}'")
+    open_rows = [(n, t) for n, t in power_rows if not any(w in t for w in UNAVAILABLE_WORDS)]
     if open_rows:
-        return CheckResult(TARGET, AVAILABLE, f"power ticket listed: {open_rows[0][:160]}", items=open_rows)
-    return CheckResult(TARGET, SOLD_OUT, f"power ticket marked unavailable: {power_rows[0][:160]}")
+        return CheckResult(TARGET, AVAILABLE, f"power ticket on sale: {open_rows[0][0][:160]}", items=[n for n, _ in open_rows])
+    return CheckResult(TARGET, SOLD_OUT, f"power ticket sold out: {power_rows[0][0][:160]}")
 
 
 def check(cfg: dict, user_agent: str, timeout: float, html: str | None = None) -> CheckResult:

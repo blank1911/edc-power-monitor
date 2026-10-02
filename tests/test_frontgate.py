@@ -16,7 +16,16 @@ def test_power_sold_out():
 def test_power_available():
     r = run("frontgate_power_available.html")
     assert r.status == AVAILABLE
-    assert "power add-on" in r.detail
+    assert "rv + power add-on" in r.detail
+
+
+def test_power_in_another_tickets_description_is_ignored():
+    # Real page: only the RV + Power ticket is named "power"; feature lines elsewhere must not count.
+    html = (FIXTURES / "frontgate_power_sold_out.html").read_text(encoding="utf-8")
+    html = html.replace("RV + Power Add-On (Drive Your Own", "RV + Hookup Add-On (Drive Your Own")
+    r = frontgate.parse(html, "power")
+    assert r.status == SOLD_OUT
+    assert "none named" in r.detail
 
 
 def test_js_shell_is_unreadable():
