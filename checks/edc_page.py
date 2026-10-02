@@ -118,8 +118,9 @@ def parse(html: str, section_heading: str, row_label: str, buy_link_domain: str)
 
 def check(cfg: dict, user_agent: str, timeout: float, html: str | None = None) -> CheckResult:
     if html is None:
-        resp = fetch(cfg["url"], user_agent, timeout)
-        html = resp.text
-        if looks_like_challenge(html):
-            return CheckResult(TARGET, BLOCKED, "bot challenge page returned, skipping")
-    return parse(html, cfg["section_heading"], cfg["row_label"], cfg["buy_link_domain"])
+        html = fetch(cfg["url"], user_agent, timeout).text
+    result = parse(html, cfg["section_heading"], cfg["row_label"], cfg["buy_link_domain"])
+    # Many normal pages load challenge scripts, so only treat it as blocked when content is also missing.
+    if result.status == STRUCTURE_BROKEN and looks_like_challenge(html):
+        return CheckResult(TARGET, BLOCKED, "bot challenge page returned, skipping")
+    return result

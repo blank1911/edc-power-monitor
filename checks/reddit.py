@@ -54,7 +54,8 @@ def parse(target: str, feed_bytes: bytes, keywords: dict) -> CheckResult:
 def check(target: str, cfg: dict, user_agent: str, timeout: float, keywords: dict, data: bytes | None = None) -> CheckResult:
     if data is None:
         resp = fetch(cfg["url"], user_agent, timeout, accept="application/atom+xml,application/rss+xml,*/*")
-        if looks_like_challenge(resp.text):
-            return CheckResult(target, BLOCKED, "block page returned instead of the feed, skipping")
         data = resp.content
-    return parse(target, data, keywords)
+    result = parse(target, data, keywords)
+    if result.status == UNREADABLE and looks_like_challenge(data.decode("utf-8", "replace")):
+        return CheckResult(target, BLOCKED, "block page returned instead of the feed, skipping")
+    return result

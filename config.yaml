@@ -8,6 +8,7 @@ heartbeat_hour: 9          # local hour (timezone above) for the daily "Monitor 
 realert_minutes: 30        # while power stays available, re-alert at most this often
 failure_alert_threshold: 3 # consecutive failed runs on one target before a warning
 max_reddit_alerts_per_run: 5
+reddit_pause_seconds: 5     # wait between the two Reddit feed requests to stay polite
 
 ntfy:
   default_server: https://ntfy.sh   # overridden by the NTFY_SERVER env var
@@ -21,7 +22,8 @@ targets:
     buy_link_domain: frontgatetickets.com
 
   frontgate:
-    enabled: true
+    # Disabled 2026-10-02: first live run misread a ticket description as available. Re-enable after fixing against real HTML.
+    enabled: false
     url: https://edclasvegas.frontgatetickets.com/event/evli2snf7u1ewciq
     ticket_keyword: power
 

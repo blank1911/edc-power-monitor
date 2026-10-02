@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -55,8 +56,12 @@ def run_checks(cfg: dict, overrides: dict | None = None) -> list[CheckResult]:
         results.append(run_safely("edc_page", edc_page.check, targets["edc_page"], ua, timeout, overrides.get("edc_page")))
     if targets["frontgate"].get("enabled", True):
         results.append(run_safely("frontgate", frontgate.check, targets["frontgate"], ua, timeout, overrides.get("frontgate")))
+    fetched_reddit = False
     for name in REDDIT_TARGETS:
         if targets[name].get("enabled", True):
+            if fetched_reddit and name not in overrides:
+                time.sleep(cfg.get("reddit_pause_seconds", 0))
+            fetched_reddit = True
             results.append(
                 run_safely(name, reddit.check, name, targets[name], ua, timeout, cfg["reddit_keywords"], overrides.get(name))
             )

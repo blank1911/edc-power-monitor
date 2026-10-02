@@ -71,8 +71,9 @@ def parse(html: str, keyword: str) -> CheckResult:
 
 def check(cfg: dict, user_agent: str, timeout: float, html: str | None = None) -> CheckResult:
     if html is None:
-        resp = fetch(cfg["url"], user_agent, timeout)
-        html = resp.text
-        if looks_like_challenge(html):
-            return CheckResult(TARGET, BLOCKED, "bot challenge page returned, skipping")
-    return parse(html, cfg.get("ticket_keyword", "power"))
+        html = fetch(cfg["url"], user_agent, timeout).text
+    result = parse(html, cfg.get("ticket_keyword", "power"))
+    # Many normal pages load challenge scripts, so only treat it as blocked when content is also missing.
+    if result.status == UNREADABLE and looks_like_challenge(html):
+        return CheckResult(TARGET, BLOCKED, "bot challenge page returned, skipping")
+    return result
