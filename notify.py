@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import os
+import re
 from dataclasses import dataclass, field
 
 import requests
 
 URGENT, HIGH, DEFAULT, LOW, MIN = 5, 4, 3, 2, 1
+TOPIC_RE = re.compile(r"[A-Za-z0-9_-]{1,64}")
 
 
 @dataclass
@@ -34,6 +36,12 @@ def send(alert: Alert, user_agent: str, timeout: float, dry_run: bool = False) -
         print(f"[notify] NTFY_TOPIC is not set, cannot send: {alert.title}")
         return False
     server = (os.environ.get("NTFY_SERVER") or "https://ntfy.sh").rstrip("/")
+    if topic.startswith(("http://", "https://")):
+        # Accept a full topic URL pasted into the secret.
+        server, _, topic = topic.rstrip("/").rpartition("/")
+    if not TOPIC_RE.fullmatch(topic):
+        print("[notify] NTFY_TOPIC is not a valid ntfy topic: use 1 to 64 letters, digits, - or _ (no spaces)")
+        return False
     headers = {
         "User-Agent": user_agent,
         "Title": _ascii(alert.title),

@@ -169,3 +169,29 @@ def test_state_save_only_when_changed(tmp_path):
     st = state_mod.default_state()
     assert state_mod.save(p, st) is True
     assert state_mod.save(p, state_mod.load(p)) is False
+
+
+@pytest.mark.parametrize(
+    "secret,expected_url",
+    [
+        ("abc_DEF-123", "https://ntfy.sh/abc_DEF-123"),
+        ("  abc123\n", "https://ntfy.sh/abc123"),
+        ("https://ntfy.sh/abc123", "https://ntfy.sh/abc123"),
+        ("has space", None),
+        ("x" * 65, None),
+    ],
+)
+def test_ntfy_topic_handling(monkeypatch, secret, expected_url):
+    import notify
+    calls = []
+
+    class Resp:
+        def raise_for_status(self):
+            pass
+
+    monkeypatch.setenv("NTFY_TOPIC", secret)
+    monkeypatch.delenv("NTFY_SERVER", raising=False)
+    monkeypatch.setattr("notify.requests.post", lambda url, **k: calls.append(url) or Resp())
+    ok = notify.send(notify.Alert("t", "b"), "ua", 1)
+    assert ok is (expected_url is not None)
+    assert calls == ([expected_url] if expected_url else [])
