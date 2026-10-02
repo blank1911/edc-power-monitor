@@ -1,0 +1,46 @@
+# EDC Las Vegas 2027 Dawn RV power monitor. Alert only, never buys anything.
+
+user_agent: "edc-power-monitor/1.0 (personal alert-only monitor; github.com/blank1911/edc-power-monitor)"
+timeout_seconds: 15
+
+timezone: America/Denver
+heartbeat_hour: 9          # local hour (timezone above) for the daily "Monitor alive" ping
+realert_minutes: 30        # while power stays available, re-alert at most this often
+failure_alert_threshold: 3 # consecutive failed runs on one target before a warning
+max_reddit_alerts_per_run: 5
+
+ntfy:
+  default_server: https://ntfy.sh   # overridden by the NTFY_SERVER env var
+
+targets:
+  edc_page:
+    enabled: true
+    url: https://lasvegas.edc.com/camp-edc/rv-camping/
+    section_heading: "Bring Your Own RV (Dawn 4 Nights)"
+    row_label: "Full Price with Power Add-On"
+    buy_link_domain: frontgatetickets.com
+
+  frontgate:
+    enabled: true
+    url: https://edclasvegas.frontgatetickets.com/event/evli2snf7u1ewciq
+    ticket_keyword: power
+
+  reddit_new:
+    enabled: true
+    url: https://www.reddit.com/r/electricdaisycarnival/new/.rss
+
+  reddit_search:
+    enabled: true
+    url: https://www.reddit.com/r/electricdaisycarnival/search.rss?q=power&restrict_sr=on&sort=new
+
+reddit_keywords:
+  # A post matches when it has at least one word from EACH group (title or body).
+  any_of:
+    - power
+    - hookup
+    - 30 amp
+    - 50 amp
+  and_any_of:
+    - rv
+    - dawn
+    - camp

@@ -1,0 +1,43 @@
+name: keepalive
+
+# GitHub disables scheduled workflows in public repos after 60 days without activity.
+# If nothing committed in the last 7 days, record a keepalive date so the monitor keeps running.
+on:
+  schedule:
+    - cron: "17 15 * * 1"   # Mondays 15:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: state-writer
+  cancel-in-progress: false
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+
+      - name: Commit a keepalive date if the repo has been quiet for a week
+        run: |
+          if [ -n "$(git log --since='7 days ago' --format=%H -1)" ]; then
+            echo "Recent commit found, no keepalive needed"
+            exit 0
+          fi
+          python3 - <<'PY'
+          import json, datetime, pathlib
+          p = pathlib.Path("state.json")
+          s = json.loads(p.read_text() or "{}")
+          s["last_keepalive"] = datetime.date.today().isoformat()
+          p.write_text(json.dumps(s, indent=2, sort_keys=True) + "\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add state.json
+          git commit -m "Keepalive"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
