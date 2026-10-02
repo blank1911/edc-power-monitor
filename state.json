@@ -35,13 +35,22 @@
   },
   "targets": {
     "edc_page": {
-      "consecutive_failures": 1,
-      "detail": "bot challenge page returned, skipping",
+      "consecutive_failures": 0,
+      "detail": "power row: full price with power add-on $1,592.90 ($1,499.98 + $92.92 fees) sold out",
       "failure_alert_sent": false,
       "last_available_alert": null,
-      "last_result": "BLOCKED",
+      "last_result": "SOLD_OUT",
       "open_incident": null,
-      "status": null
+      "status": "SOLD_OUT"
+    },
+    "frontgate": {
+      "consecutive_failures": 0,
+      "detail": "power ticket sold out: 2027 edc las vegas - camp edc dawn (may 20-24) - rv + power add-on (drive your own, no extra vehicle)",
+      "failure_alert_sent": false,
+      "last_available_alert": null,
+      "last_result": "SOLD_OUT",
+      "open_incident": null,
+      "status": "SOLD_OUT"
     },
     "reddit_new": {
       "consecutive_failures": 0,
@@ -53,7 +62,7 @@
       "status": "OK"
     },
     "reddit_search": {
-      "consecutive_failures": 1,
+      "consecutive_failures": 2,
       "detail": "blocked: HTTP 429",
       "failure_alert_sent": false,
       "last_available_alert": null,
