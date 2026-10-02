@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
+    inputs:
+      test_alert:
+        description: "Only send one test notification at each priority (no checks)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -32,7 +37,12 @@ jobs:
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           NTFY_SERVER: ${{ vars.NTFY_SERVER }}
-        run: python monitor.py
+        run: |
+          if [ "${{ inputs.test_alert }}" = "true" ]; then
+            python monitor.py --test-alert
+          else
+            python monitor.py
+          fi
 
       - name: Commit state.json if it changed
         if: always()

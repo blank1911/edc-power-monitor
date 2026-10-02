@@ -79,6 +79,9 @@ python monitor.py --test-alert
 5. **Actions** tab > **monitor** > **Run workflow** to start a manual run. The run summary shows a
    table with each target's status. Today it should show `edc_page | SOLD_OUT` and send no urgent alert.
 
+To send the test notifications from GitHub instead of your PC: **Actions > monitor > Run workflow**,
+tick "Only send one test notification at each priority", then **Run workflow**.
+
 The `monitor` workflow runs every 5 minutes (GitHub may delay scheduled runs by a few minutes
 when busy). The `keepalive` workflow runs weekly and commits a date to `state.json` if nothing
 else has, because GitHub turns off scheduled workflows in public repos after 60 days without
