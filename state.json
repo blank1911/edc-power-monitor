@@ -57,12 +57,12 @@
       "status": "SOLD_OUT"
     },
     "reddit_new": {
-      "consecutive_failures": 1,
-      "detail": "blocked: HTTP 429",
+      "consecutive_failures": 0,
+      "detail": "25 posts read",
       "failure_alert_sent": false,
       "last_available_alert": null,
-      "last_result": "BLOCKED",
-      "open_incident": "BLOCKED",
+      "last_result": "OK",
+      "open_incident": null,
       "status": "OK"
     },
     "reddit_search": {
