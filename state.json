@@ -57,11 +57,11 @@
       "status": "SOLD_OUT"
     },
     "reddit_new": {
-      "consecutive_failures": 0,
-      "detail": "25 posts read",
+      "consecutive_failures": 1,
+      "detail": "request failed: ConnectionError: HTTPSConnectionPool(host='www.reddit.com', port=443): Read timed out.",
       "failure_alert_sent": false,
       "last_available_alert": null,
-      "last_result": "OK",
+      "last_result": "ERROR",
       "open_incident": null,
       "status": "OK"
     },
