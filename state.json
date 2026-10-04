@@ -54,12 +54,12 @@
     },
     "frontgate": {
       "consecutive_failures": 0,
-      "detail": "power ticket sold out: 2027 edc las vegas - camp edc dawn (may 20-24) - rv + power add-on (drive your own, no extra vehicle)",
+      "detail": "power ticket on sale: 2027 edc las vegas - camp edc dawn (may 20-24) - rv + power add-on (drive your own, no extra vehicle)",
       "failure_alert_sent": false,
-      "last_available_alert": null,
-      "last_result": "SOLD_OUT",
+      "last_available_alert": "2026-10-04T22:50:16Z",
+      "last_result": "AVAILABLE",
       "open_incident": null,
-      "status": "SOLD_OUT"
+      "status": "AVAILABLE"
     },
     "reddit_new": {
       "consecutive_failures": 0,
